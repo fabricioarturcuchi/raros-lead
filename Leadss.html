@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Consórcio Raros Capital - Geração de Leads</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #000;
+    color: #fff;
+    margin: 0; padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container {
+    background: #111;
+    padding: 30px 40px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 0 20px #b38b00aa;
+  }
+  h1 {
+    color: #b38b00;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  select, input[type="number"], input[type="text"], input[type="tel"], input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    background: #222;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  input::placeholder {
+    color: #aaa;
+  }
+  button {
+    margin-top: 25px;
+    background: #b38b00;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    padding: 14px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  button:hover {
+    background: #d2af00;
+  }
+  .info-text {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #ccc;
+  }
+  .resultado {
+    margin-top: 25px;
+    background: #222;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #f0e68c;
+  }
+  .error {
+    color: #f44336;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Consórcio Raros Capital</h1>
+
+  <label for="tipoConsorcio">Tipo de Consórcio:</label>
+  <select id="tipoConsorcio" aria-describedby="infoTipo">
+    <option value="" disabled selected>-- Selecione --</option>
+    <option value="automovel">Automóvel</option>
+    <option value="imovel">Imóvel</option>
+  </select>
+  <div id="infoTipo" class="info-text"></div>
+
+  <label for="valorDesejado">Valor Desejado (R$):</label>
+  <input id="valorDesejado" type="number" min="0" placeholder="Ex: 80000" disabled />
+
+  <div id="infoTaxaPrazo" class="info-text"></div>
+
+  <div id="errorMsg" class="error" role="alert" aria-live="assertive"></div>
+
+  <label for="nome">Nome Completo:</label>
+  <input id="nome" type="text" placeholder="Seu nome" />
+
+  <label for="telefone">Telefone:</label>
+  <input id="telefone" type="tel" placeholder="(00) 00000-0000" />
+
+  <label for="email">Email:</label>
+  <input id="email" type="email" placeholder="email@exemplo.com" />
+
+  <button id="btnEnviar" disabled>Enviar</button>
+
+  <div id="resultado" class="resultado" aria-live="polite"></div>
+</div>
+
+<script>
+  const tipoSelect = document.getElementById('tipoConsorcio');
+  const valorInput = document.getElementById('valorDesejado');
+  const infoTaxaPrazo = document.getElementById('infoTaxaPrazo');
+  const errorMsg = document.getElementById('errorMsg');
+  const btnEnviar = document.getElementById('btnEnviar');
+  const resultado = document.getElementById('resultado');
+  const nome = document.getElementById('nome');
+  const telefone = document.getElementById('telefone');
+  const email = document.getElementById('email');
+
+  const parametros = {
+    automovel: {min: 65000, max: 130000, taxa: 16, prazo: 84},
+    imovel: {min: 200000, max: 500000, taxa: 22, prazo: 220}
+  };
+
+  let tipoSelecionado = "";
+
+  tipoSelect.addEventListener('change', () => {
+    tipoSelecionado = tipoSelect.value;
+    valorInput.disabled = false;
+    valorInput.value = "";
+    resultado.textContent = "";
+    errorMsg.textContent = "";
+    btnEnviar.disabled = true;
+
+    if (tipoSelecionado) {
+      const p = parametros[tipoSelecionado];
+      infoTaxaPrazo.textContent = `Taxa Administrativa: ${p.taxa}% | Prazo máximo: ${p.prazo} parcelas | Valor mínimo: R$${p.min.toLocaleString('pt-BR')} | Valor máximo: R$${p.max.toLocaleString('pt-BR')}`;
+      valorInput.min = p.min;
+      valorInput.max = p.max;
+      valorInput.placeholder = `Informe valor entre R$${p.min.toLocaleString('pt-BR')} e R$${p.max.toLocaleString('pt-BR')}`;
+    } else {
+      infoTaxaPrazo.textContent = "";
+      valorInput.disabled = true;
+      valorInput.value = "";
+    }
+  });
+
+  valorInput.addEventListener('input', () => {
+    errorMsg.textContent = "";
+    resultado.textContent = "";
+    btnEnviar.disabled = true;
+
+    if (!tipoSelecionado) {
+      errorMsg.textContent = "Selecione o tipo de consórcio primeiro.";
+      valorInput.value = "";
+      return;
+    }
+    const p = parametros[tipoSelecionado];
+    const val = Number(valorInput.value);
+
+    if (val < p.min || val > p.max) {
+      errorMsg.textContent = `O valor deve estar entre R$${p.min.toLocaleString('pt-BR')} e R$${p.max.toLocaleString('pt-BR')}.`;
+      return;
+    }
+
+    if (!nome.value.trim() || !telefone.value.trim() || !email.value.trim()) {
+      btnEnviar.disabled = true;
+      return;
+    }
+
+    // Calcula valor aproximado da parcela
+    const parcela = val / p.prazo;
+
+    resultado.innerHTML = `
+      Valor Desejado: <strong>R$${val.toLocaleString('pt-BR')}</strong><br/>
+      Prazo: <strong>${p.prazo} parcelas</strong><br/>
+      Taxa Administrativa: <strong>${p.taxa}%</strong><br/>
+      Valor aproximado da parcela: <strong>R$${parcela.toFixed(2).toLocaleString('pt-BR')}</strong>
+    `;
+
+    btnEnviar.disabled = false;
+  });
+
+  // Também verifica se campos de contato estão preenchidos para habilitar botão
+  [nome, telefone, email].forEach(el => {
+    el.addEventListener('input', () => {
+      if (!tipoSelecionado) return btnEnviar.disabled = true;
+
+      const p = parametros[tipoSelecionado];
+      const val = Number(valorInput.value);
+
+      if (
+        val >= p.min && val <= p.max &&
+        nome.value.trim() && telefone.value.trim() && email.value.trim()
+      ) {
+        btnEnviar.disabled = false;
+      } else {
+        btnEnviar.disabled = true;
+      }
+    });
+  });
+
+  btnEnviar.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Aqui você pode implementar a lógica de envio para seu backend / API / CRM
+    alert(`Lead enviado com sucesso!\n\nNome: ${nome.value}\nTelefone: ${telefone.value}\nEmail: ${email.value}\nTipo: ${tipoSelecionado}\nValor Desejado: R$${Number(valorInput.value).toLocaleString('pt-BR')}`);
+
+    // Limpa formulário após envio
+    tipoSelect.value = "";
+    valorInput.value = "";
+    valorInput.disabled = true;
+    infoTaxaPrazo.textContent = "";
+    resultado.textContent = "";
+    errorMsg.textContent = "";
+    nome.value = "";
+    telefone.value = "";
+    email.value = "";
+    btnEnviar.disabled = true;
+  });
+</script>
+
+</body>
+</html>
