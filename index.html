@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Lead Consórcio - Envio para Google Sheets</title>
+<title>Landing Page Consórcio</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -11,84 +11,102 @@
     color: #fff;
     max-width: 480px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 0 15px 40px;
+  }
+  h1 {
+    color: #b38b00;
+    text-align: center;
   }
   label {
     display: block;
-    margin-top: 15px;
+    margin-top: 20px;
     font-weight: bold;
   }
-  select, input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
+  select, input[type="number"], input[type="text"], input[type="email"], input[type="tel"] {
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
-    border-radius: 6px;
-    border: none;
+    margin-top: 6px;
     font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background: #222;
+    color: #fff;
+  }
+  .info {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ccc;
+  }
+  .output {
+    margin-top: 20px;
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #f0e68c;
   }
   button {
-    margin-top: 25px;
+    margin-top: 30px;
     background: #b38b00;
-    border: none;
     color: #000;
-    font-weight: 700;
-    padding: 12px;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    font-weight: bold;
     font-size: 18px;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
+    transition: background-color 0.3s ease;
   }
   button:hover {
-    background: #d2af00;
-  }
-  .info {
-    margin-top: 8px;
-    color: #b38b00;
-  }
-  .error {
-    color: #e55;
-    margin-top: 8px;
+    background-color: #d2af00;
   }
   .success {
-    color: #6f6;
-    margin-top: 8px;
+    margin-top: 20px;
+    color: #7ed957;
+    font-weight: 700;
+    text-align: center;
+  }
+  .error {
+    color: #ff4c4c;
+    margin-top: 10px;
+    font-weight: 600;
   }
 </style>
 </head>
 <body>
 
-<h1>Consórcio - Solicite seu orçamento</h1>
+<h1>Simule seu Consórcio</h1>
 
-<form id="formLead">
+<form id="leadForm">
 
-  <label for="tipoConsorcio">Tipo de Consórcio</label>
-  <select id="tipoConsorcio" required>
-    <option value="" disabled selected>-- Selecione --</option>
-    <option value="Automovel">Automóvel</option>
-    <option value="Imovel">Imóvel</option>
+  <label for="tipoConsorcio">Tipo de Consórcio:</label>
+  <select id="tipoConsorcio" name="tipoConsorcio" required>
+    <option value="" disabled selected>Selecione...</option>
+    <option value="Automóvel">Automóvel</option>
+    <option value="Imóvel">Imóvel</option>
   </select>
 
-  <label for="valorDesejado">Valor Desejado (R$)</label>
-  <input type="number" id="valorDesejado" placeholder="Ex: 80000" min="0" required disabled />
+  <label for="valorDesejado">Valor Desejado (R$):</label>
+  <input type="number" id="valorDesejado" name="valorDesejado" placeholder="Ex: 80000" min="0" step="100" required disabled />
 
   <div class="info" id="infoTaxaPrazo"></div>
 
-  <label for="valorParcela">Valor da Parcela (R$)</label>
-  <input type="number" id="valorParcela" placeholder="Ex: 1500" min="0" required disabled />
+  <label for="valorParcela">Valor da Parcela Aproximada (R$):</label>
+  <input type="text" id="valorParcela" name="valorParcela" readonly placeholder="Valor da parcela será calculado automaticamente" />
 
-  <label for="nome">Nome Completo</label>
-  <input type="text" id="nome" placeholder="Seu nome" required />
+  <label for="nome">Nome Completo:</label>
+  <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required />
 
-  <label for="telefone">Telefone</label>
-  <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" required />
+  <label for="telefone">Telefone:</label>
+  <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required />
 
-  <label for="email">E-mail</label>
-  <input type="email" id="email" placeholder="seu@email.com" required />
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" placeholder="email@exemplo.com" required />
 
-  <button type="submit">Enviar</button>
-
-  <div id="mensagem"></div>
-
+  <button type="submit">Enviar Lead</button>
+  
+  <div id="msg" role="alert"></div>
 </form>
 
 <script>
@@ -96,106 +114,102 @@
   const valorDesejado = document.getElementById('valorDesejado');
   const valorParcela = document.getElementById('valorParcela');
   const infoTaxaPrazo = document.getElementById('infoTaxaPrazo');
-  const form = document.getElementById('formLead');
-  const mensagem = document.getElementById('mensagem');
+  const msg = document.getElementById('msg');
+  const form = document.getElementById('leadForm');
 
-  // Define limites e taxa conforme seleção
+  let taxaAdm = 0;
+  let prazo = 0;
+  let minValor = 0;
+  let maxValor = 0;
+
   tipoConsorcio.addEventListener('change', () => {
-    mensagem.textContent = '';
-    valorDesejado.value = '';
+    msg.textContent = '';
     valorParcela.value = '';
+    valorDesejado.value = '';
     valorDesejado.disabled = false;
-    valorParcela.disabled = false;
 
-    if (tipoConsorcio.value === 'Automovel') {
-      valorDesejado.min = 65000;
-      valorDesejado.max = 130000;
-      infoTaxaPrazo.textContent = "Taxa Administrativa: 16% | Prazo máximo: 84 parcelas";
-    } else if (tipoConsorcio.value === 'Imovel') {
-      valorDesejado.min = 200000;
-      valorDesejado.max = 500000;
-      infoTaxaPrazo.textContent = "Taxa Administrativa: 22% | Prazo máximo: 220 parcelas";
+    if (tipoConsorcio.value === 'Automóvel') {
+      taxaAdm = 0.16;
+      prazo = 84;
+      minValor = 65000;
+      maxValor = 130000;
+      infoTaxaPrazo.textContent = `Taxa administrativa: 16% | Prazo: 84 parcelas | Valor mínimo: R$65.000,00 | Valor máximo: R$130.000,00`;
+    } else if (tipoConsorcio.value === 'Imóvel') {
+      taxaAdm = 0.22;
+      prazo = 220;
+      minValor = 200000;
+      maxValor = 500000;
+      infoTaxaPrazo.textContent = `Taxa administrativa: 22% | Prazo: 220 parcelas | Valor mínimo: R$200.000,00 | Valor máximo: R$500.000,00`;
     } else {
-      valorDesejado.disabled = true;
-      valorParcela.disabled = true;
+      taxaAdm = 0;
+      prazo = 0;
+      minValor = 0;
+      maxValor = 0;
       infoTaxaPrazo.textContent = '';
+      valorDesejado.disabled = true;
     }
   });
 
-  form.addEventListener('submit', e => {
+  valorDesejado.addEventListener('input', () => {
+    msg.textContent = '';
+    const valor = Number(valorDesejado.value);
+    if (valor >= minValor && valor <= maxValor) {
+      const valorTotal = valor + (valor * taxaAdm);
+      const parcela = valorTotal / prazo;
+      valorParcela.value = parcela.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    } else {
+      valorParcela.value = '';
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    mensagem.textContent = '';
-    mensagem.className = '';
+    msg.textContent = '';
+    msg.className = '';
 
-    // Validação básica dos valores
-    const tipo = tipoConsorcio.value;
-    const valorD = Number(valorDesejado.value);
-    const valorP = Number(valorParcela.value);
-    const nome = document.getElementById('nome').value.trim();
-    const tel = document.getElementById('telefone').value.trim();
-    const email = document.getElementById('email').value.trim();
-
-    if (!tipo) {
-      mensagem.textContent = 'Selecione o tipo de consórcio.';
-      mensagem.className = 'error';
+    const valor = Number(valorDesejado.value);
+    if (valor < minValor || valor > maxValor) {
+      msg.textContent = `Por favor, informe um valor entre R$${minValor.toLocaleString()} e R$${maxValor.toLocaleString()}.`;
+      msg.className = 'error';
       return;
     }
 
-    if (isNaN(valorD) || valorD < valorDesejado.min || valorD > valorDesejado.max) {
-      mensagem.textContent = `Valor desejado deve estar entre R$ ${Number(valorDesejado.min).toLocaleString('pt-BR')} e R$ ${Number(valorDesejado.max).toLocaleString('pt-BR')}.`;
-      mensagem.className = 'error';
-      return;
-    }
-
-    if (isNaN(valorP) || valorP <= 0) {
-      mensagem.textContent = 'Informe um valor válido para a parcela.';
-      mensagem.className = 'error';
-      return;
-    }
-
-    if (!nome || !tel || !email) {
-      mensagem.textContent = 'Preencha todos os campos.';
-      mensagem.className = 'error';
-      return;
-    }
-
-    const dados = {
-      tipoConsorcio: tipo,
-      valorDesejado: valorD.toFixed(2),
-      valorParcela: valorP.toFixed(2),
-      nome: nome,
-      telefone: tel,
-      email: email
+    // Dados para enviar
+    const data = {
+      tipoConsorcio: tipoConsorcio.value,
+      valorDesejado: valor.toFixed(2),
+      valorParcela: valorParcela.value,
+      nome: document.getElementById('nome').value.trim(),
+      telefone: document.getElementById('telefone').value.trim(),
+      email: document.getElementById('email').value.trim()
     };
 
-    mensagem.textContent = 'Enviando...';
-    mensagem.className = '';
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxKMwF8hwdj1HrLic5zqARMNZ95tA3C7AQFQlbQ24tJgWajaYB9avXWVwlLpv38i0o2DQ/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
 
-    fetch('https://script.google.com/macros/s/AKfycbxKMwF8hwdj1HrLic5zqARMNZ95tA3C7AQFQlbQ24tJgWajaYB9avXWVwlLpv38i0o2DQ/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dados)
-    })
-    .then(response => response.json())
-    .then(resp => {
-      if (resp.result === 'success') {
-        mensagem.textContent = 'Lead enviado com sucesso! Obrigado.';
-        mensagem.className = 'success';
+      const result = await response.json();
+
+      if (result.result === 'success') {
+        msg.textContent = 'Lead enviado com sucesso!';
+        msg.className = 'success';
         form.reset();
+        valorParcela.value = '';
         valorDesejado.disabled = true;
-        valorParcela.disabled = true;
         infoTaxaPrazo.textContent = '';
       } else {
-        mensagem.textContent = 'Erro ao enviar: ' + resp.message;
-        mensagem.className = 'error';
+        throw new Error('Erro ao enviar lead.');
       }
-    })
-    .catch(error => {
-      mensagem.textContent = 'Erro na comunicação: ' + error.message;
-      mensagem.className = 'error';
-    });
+    } catch (error) {
+      msg.textContent = 'Erro ao enviar os dados. Tente novamente.';
+      msg.className = 'error';
+      console.error(error);
+    }
   });
 </script>
 
