@@ -175,12 +175,12 @@ form.addEventListener('submit', async (e) => {
   try {
     await addDoc(collection(db, "leads"), lead);
     msg.style.color = "var(--dourado-escuro)";
-    msg.textContent = "Lead enviado com sucesso! Obrigado.";
+    msg.textContent = "Solicitação enviada com sucesso! Obrigado.";
     form.reset();
   } catch (error) {
-    console.error("Erro ao enviar lead:", error);
+    console.error("Erro ao enviar solicitação:", error);
     msg.style.color = "red";
-    msg.textContent = "Erro ao enviar lead. Tente novamente.";
+    msg.textContent = "Erro ao enviar solicitação. Tente novamente.";
   }
 });
 </script>
