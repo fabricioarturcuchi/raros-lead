@@ -5,62 +5,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Raros Capital - Coleta de Leads com Firebase</title>
 <style>
+  :root {
+    --dourado: #bfa34a;
+    --dourado-escuro: #8c7b2a;
+    --preto: #1d1d1d;
+    --branco: #ffffff;
+  }
+
   body {
     font-family: Arial, sans-serif;
-    background:#f0f3f7;
+    background: var(--branco);
     padding: 20px;
-    color: #1d3557;
+    color: var(--preto);
   }
   .container {
     max-width: 480px;
     margin: auto;
-    background: #fff;
+    background: var(--branco);
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    border: 2px solid var(--dourado);
+  }
+  .logo {
+    display: block;
+    margin: 0 auto 25px auto;
+    max-width: 180px;
+    height: auto;
   }
   h1 {
     text-align: center;
     margin-bottom: 25px;
+    color: var(--preto);
+    font-weight: 700;
   }
   label {
     display: block;
     margin-top: 15px;
-    font-weight: bold;
+    font-weight: 700;
+    color: var(--preto);
   }
   input, button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 6px;
     font-size: 16px;
     border-radius: 6px;
-    border: 1.5px solid #ccc;
+    border: 2px solid var(--dourado);
+    font-weight: 600;
   }
   input:focus {
-    border-color: #457b9d;
+    border-color: var(--dourado-escuro);
     outline: none;
+    box-shadow: 0 0 5px var(--dourado-escuro);
   }
   button {
-    background-color: #1d3557;
-    color: white;
+    background-color: var(--dourado);
+    color: var(--branco);
     font-weight: 700;
     cursor: pointer;
     margin-top: 20px;
+    transition: background-color 0.3s ease;
+    border: none;
   }
   button:hover {
-    background-color: #457b9d;
+    background-color: var(--dourado-escuro);
   }
   .msg {
     margin-top: 20px;
     text-align: center;
-    font-weight: bold;
-    color: green;
+    font-weight: 700;
+    color: var(--dourado-escuro);
   }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- Logo Raros Capital -->
+  <img class="logo" src="https://i.postimg.cc/wMPWky1K/Sem-t-tulo-removebg-preview.png" alt="Logo Raros Capital" />
+
   <h1>Raros Capital - Simulador</h1>
   <form id="leadForm">
     <label for="name">Nome completo *</label>
@@ -86,7 +110,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC2RmhrsTe-o1jE3pVbFLKDl11m8zFW7tk",
   authDomain: "site-raros.firebaseapp.com",
@@ -97,11 +120,9 @@ const firebaseConfig = {
   measurementId: "G-S3ZLSEE4GP"
 };
 
-// Inicializa Firebase e Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Máscara para telefone (brasileiro)
 const phoneInput = document.getElementById('phone');
 phoneInput.addEventListener('input', e => {
   let v = e.target.value.replace(/\D/g, '').slice(0,11);
@@ -110,7 +131,6 @@ phoneInput.addEventListener('input', e => {
   e.target.value = v;
 });
 
-// Máscara para moeda no formato R$ xxx.xxx,xx
 const valorInput = document.getElementById('valor');
 valorInput.addEventListener('input', e => {
   let v = e.target.value.replace(/\D/g, '');
@@ -136,8 +156,7 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  // Limpar valor para número
-  valorStr = valorStr.replace(/[^\d,]/g, '').replace(',', '.'); // ex: "1.234,56" -> "1234.56"
+  valorStr = valorStr.replace(/[^\d,]/g, '').replace(',', '.');
   const valor = parseFloat(valorStr);
 
   if (isNaN(valor) || valor <= 0) {
@@ -145,7 +164,6 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  // Monta objeto lead
   const lead = {
     nome,
     email,
@@ -156,12 +174,13 @@ form.addEventListener('submit', async (e) => {
 
   try {
     await addDoc(collection(db, "leads"), lead);
+    msg.style.color = "var(--dourado-escuro)";
     msg.textContent = "Lead enviado com sucesso! Obrigado.";
     form.reset();
   } catch (error) {
     console.error("Erro ao enviar lead:", error);
-    msg.textContent = "Erro ao enviar lead. Tente novamente.";
     msg.style.color = "red";
+    msg.textContent = "Erro ao enviar lead. Tente novamente.";
   }
 });
 </script>
