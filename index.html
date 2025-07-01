@@ -1,189 +1,170 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Raros Capital - Consórcios</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0d0d0d;
-      color: #ffffff;
-    }
-    header {
-      background: #0d0d0d;
-      color: #d4af37;
-      text-align: center;
-      padding: 20px;
-      border-bottom: 2px solid #d4af37;
-    }
-    .hero {
-      text-align: center;
-      padding: 40px 20px;
-      background: #1a1a1a;
-    }
-    .hero h2 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-      color: #d4af37;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-      color: #ccc;
-    }
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-    .feature-card {
-      background: #ffffff;
-      color: #0d0d0d;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      flex: 1 1 280px;
-      text-align: center;
-    }
-    .feature-card h3 {
-      color: #d4af37;
-      margin-bottom: 10px;
-    }
-    .contact {
-      background: #1a1a1a;
-      padding: 30px 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    .contact h3 {
-      text-align: center;
-      color: #d4af37;
-      margin-bottom: 20px;
-    }
-    form label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    form input, form select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    form button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      background: #d4af37;
-      color: #0d0d0d;
-      border: none;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    form button:hover {
-      background: #c49b2e;
-    }
-    .whatsapp-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .whatsapp-link a {
-      color: #25d366;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1rem;
-    }
-    footer {
-      background: #0d0d0d;
-      color: #aaa;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.9rem;
-      border-top: 2px solid #d4af37;
-    }
-    @media (max-width: 600px) {
-      .features {
-        flex-direction: column;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Raros Capital - Coleta de Leads com Firebase</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background:#f0f3f7;
+    padding: 20px;
+    color: #1d3557;
+  }
+  .container {
+    max-width: 480px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+  }
+  input:focus {
+    border-color: #457b9d;
+    outline: none;
+  }
+  button {
+    background-color: #1d3557;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  button:hover {
+    background-color: #457b9d;
+  }
+  .msg {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: green;
+  }
+</style>
 </head>
 <body>
 
-<header>
-  <h1>Raros Capital</h1>
-</header>
-
-<section class="hero">
-  <h2>Consórcios Inteligentes</h2>
-  <p>Conquiste seu imóvel, carro ou serviço com planejamento e exclusividade. Sem juros. Sem burocracia.</p>
-</section>
-
-<section class="features">
-  <div class="feature-card">
-    <h3>✔ Sem Juros</h3>
-    <p>Pagamentos justos, sem os altos juros dos financiamentos.</p>
-  </div>
-  <div class="feature-card">
-    <h3>💼 Parcelas Flexíveis</h3>
-    <p>Planos sob medida para seu orçamento e metas.</p>
-  </div>
-  <div class="feature-card">
-    <h3>🤝 Suporte Premium</h3>
-    <p>Acompanhamento consultivo do início ao fim.</p>
-  </div>
-</section>
-
-<section class="contact" id="contato">
-  <h3>Solicite sua Simulação</h3>
-  <form action="https://formsubmit.co/fabricio@raroscapital.com.br" method="POST">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_subject" value="Novo Lead - Raros Capital">
-    <input type="hidden" name="_template" value="box">
-    <input type="hidden" name="_next" value="https://seusite.com/obrigado.html">
-
-    <label for="nome">Nome completo *</label>
-    <input type="text" id="nome" name="Nome" required />
-
-    <label for="telefone">Telefone *</label>
-    <input type="tel" id="telefone" name="Telefone" required placeholder="(XX) XXXXX-XXXX" />
+<div class="container">
+  <h1>Raros Capital - Simulador</h1>
+  <form id="leadForm">
+    <label for="name">Nome completo *</label>
+    <input type="text" id="name" name="name" placeholder="Seu nome completo" required />
 
     <label for="email">E-mail *</label>
-    <input type="email" id="email" name="Email" required />
+    <input type="email" id="email" name="email" placeholder="Seu e-mail" required />
 
-    <label for="tipoConsorcio">Tipo de Consórcio *</label>
-    <select id="tipoConsorcio" name="Tipo de Consórcio" required>
-      <option value="">Selecione</option>
-      <option value="Imóvel">Imóvel</option>
-      <option value="Veículo">Veículo</option>
-      <option value="Serviço">Serviço</option>
-      <option value="Outros">Outros</option>
-    </select>
+    <label for="phone">WhatsApp (com DDD) *</label>
+    <input type="tel" id="phone" name="phone" placeholder="(99) 99999-9999" maxlength="15" required />
 
-    <button type="submit">Enviar</button>
+    <label for="valor">Valor total (R$) *</label>
+    <input type="text" id="valor" name="valor" placeholder="R$ 0,00" required />
+
+    <button type="submit">Enviar Lead</button>
   </form>
 
-  <div class="whatsapp-link">
-    <a href="https://wa.me/5549933816445?text=Olá!%20Tenho%20interesse%20em%20uma%20simulação%20de%20consórcio%20com%20a%20Raros%20Capital" target="_blank">
-      💬 Fale com um consultor via WhatsApp
-    </a>
-  </div>
-</section>
+  <div class="msg" id="msg"></div>
+</div>
 
-<footer>
-  &copy; 2025 Raros Capital — Todos os direitos reservados.
-</footer>
+<script type="module">
+// Import Firebase libs (versão modular)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+// Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC2RmhrsTe-o1jE3pVbFLKDl11m8zFW7tk",
+  authDomain: "site-raros.firebaseapp.com",
+  projectId: "site-raros",
+  storageBucket: "site-raros.firebasestorage.app",
+  messagingSenderId: "610375954172",
+  appId: "1:610375954172:web:6c1cf57ef39d6e93a1f179",
+  measurementId: "G-S3ZLSEE4GP"
+};
+
+// Inicializa Firebase e Firestore
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Máscara para telefone (brasileiro)
+const phoneInput = document.getElementById('phone');
+phoneInput.addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '').slice(0,11);
+  v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+  v = v.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+  e.target.value = v;
+});
+
+// Máscara para moeda no formato R$ xxx.xxx,xx
+const valorInput = document.getElementById('valor');
+valorInput.addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '');
+  v = (parseInt(v || 0) / 100).toFixed(2) + '';
+  v = v.replace('.', ',');
+  v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  e.target.value = 'R$ ' + v;
+});
+
+const form = document.getElementById('leadForm');
+const msg = document.getElementById('msg');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const nome = form.name.value.trim();
+  const email = form.email.value.trim();
+  const telefone = form.phone.value.trim();
+  let valorStr = form.valor.value.trim();
+
+  if (!nome || !email || !telefone || !valorStr) {
+    alert("Por favor, preencha todos os campos obrigatórios.");
+    return;
+  }
+
+  // Limpar valor para número
+  valorStr = valorStr.replace(/[^\d,]/g, '').replace(',', '.'); // ex: "1.234,56" -> "1234.56"
+  const valor = parseFloat(valorStr);
+
+  if (isNaN(valor) || valor <= 0) {
+    alert("Informe um valor válido.");
+    return;
+  }
+
+  // Monta objeto lead
+  const lead = {
+    nome,
+    email,
+    telefone,
+    valor,
+    criadoEm: new Date().toISOString()
+  };
+
+  try {
+    await addDoc(collection(db, "leads"), lead);
+    msg.textContent = "Lead enviado com sucesso! Obrigado.";
+    form.reset();
+  } catch (error) {
+    console.error("Erro ao enviar lead:", error);
+    msg.textContent = "Erro ao enviar lead. Tente novamente.";
+    msg.style.color = "red";
+  }
+});
+</script>
 
 </body>
 </html>
